@@ -312,9 +312,9 @@ namespace tema4CN
             if (i == 0)
                 return 1;
             double prod = 1;
-            for (int j = 0; j < i; j++)
+            for (int j = 1; j <= i; j++)
             {
-                prod *= (q - j + 1)/(j + 1);
+                prod *= (q - j + 1)/(j);
             }
             return prod;
 
@@ -334,25 +334,25 @@ namespace tema4CN
             double a = 1;
             double b = 10;
             int m = 20;
-            double x0 = 0;
-            double h = 1;
+            double x0 = vector3[0];
             double[] y = new double[m];
-            double hprim = (b - a) / (m - 1);
+            double h = (b - a) / (m - 1);
             List<double>pp=new List<double>();
             double p = 0;
             for (int k = 0; k < m; k++)
             {
-                y[k] = x0 + k*hprim;
-                double q = (y[k] - x0)/(k + 1);
-                for (int i = 0; i < vector3.Length; i++)
+                y[k] = x0 + k*h;
+                p = 0;
+                double q = (y[k] - x0)/(h);
+                for (int i = 0; i <= vector3.Length; i++)
                 {
-                    p += comb(q, i + 1)*deltah(i + 1, x0, h);
+                    p += comb(q, i)*deltah(i, x0, h);
                 }
                 pp.Add(p);
             }
             foreach (var v in pp)
             {
-                dataGridView1.Rows.Add(p);
+                dataGridView1.Rows.Add(v);
             }
         }
     }
