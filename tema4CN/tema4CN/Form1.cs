@@ -39,6 +39,7 @@ namespace tema4CN
         {
             dataGridView1.Columns.Clear();
             dataGridView1.Rows.Clear();
+            dataGridView1.RowHeadersWidth = 30;
         }
 
         private void concractiei_click(object sender, EventArgs e)
@@ -226,30 +227,32 @@ namespace tema4CN
 
         public double func2(double x) => Math.Pow(x, 10);
 
+
         private void lagrangeButton_Click(object sender, EventArgs e)
         {
             ClearGrid();
             dataGridView1.Columns.Add("Value", "Val");
+            dataGridView1.Columns[0].Width = 300;
             double a = -3/2.0;
             double b = 3/2.0;
             int m = 20;
             double[] y=new double[m];
             double h = (b - a)/(m - 1);
             List<double> pp=new List<double>();
-            for (int i = 0; i < m; i++)
+            for (int k = 0; k < m; k++)
             {
-                y[i] = a + i*h;
+                y[k] = a + k*h;
                 double p = 0;
                 double prod = 1;
-                for (int j = 0; j < vector2.Length; j++)
+                for (int i = 0; i < vector2.Length; i++)
                 {
                     prod = 1;
-                    for (int k = 0; k<vector2.Length; k++)
+                    for (int j = 0; j<vector2.Length; j++)
                     {
-                        if(j!=k)
-                            prod *= (y[i] - y[k])/(vector2[j] - vector2[k]);
+                        if(i!=j)
+                            prod *= (y[k] - vector2[j])/(vector2[i] - vector2[j]);
                     }
-                    p += func(vector2[j])*prod;
+                    p += func(vector2[i])*prod;
                 }
                 pp.Add(p);
             }
@@ -263,48 +266,44 @@ namespace tema4CN
         {
             ClearGrid();
             dataGridView1.Columns.Add("Value", "Val");
+            dataGridView1.Columns[0].Width = 300;
             double a = -3 / 2.0;
             double b = 3 / 2.0;
             int m = 20;
             double[] y = new double[m];
-            double[] c = new double[m];
-            double[,] av=new double[m,m];
+            double[] c = new double[vector2.Length];
+            double[,] av=new double[vector2.Length,vector2.Length];
             double h = (b - a) / (m - 1);
             List<double> pp = new List<double>();
             double p = 0;
+            for (int i = 0; i < vector2.Length; i++)
+            {
+                av[0, i] = func(vector2[i]);
+            }
+            c[0] = av[0, 0];
+            double prod = 1;
+            for (int i = 1; i < vector2.Length; i++)
+            {
+                prod = 1;
+                for (int j = i; j < vector2.Length; j++)
+                {
+                    av[i, j] = (av[i - 1, j] - av[i - 1, j - 1]) / (vector2[j] - vector2[j - i]);
+                }
+                c[i] = av[i, i];
+            }
             for (int i = 0; i < m; i++)
             {
                 y[i] = a + i * h;
-                for (int j = 0; j < vector2.Length; j++)
+                p = c[vector2.Length-1];
+                for (int j = vector2.Length-2; j >= 0; j--)
                 {
-                    av[0, j] = func(vector2[j]);
-                }
-                c[0] = av[0, 0];
-                double prod = 1;
-                for (int j = 1; j < vector2.Length; j++)
-                {
-                    prod = 1;
-                    for (int k = j; k < vector2.Length; k++)
-                    {
-                        av[j, k] = (av[j - 1, k] - av[j - 1, k - 1])/(vector2[k] - vector2[k - 1]);
-                    }
-                    c[i] = av[i, i];
-                }
-                p = c[0];
-                for (int j = 0; j < vector2.Length; j++)
-                {
-                    prod = 1;
-                    for (int k = 0; k < j; k++)
-                    {
-                        prod *= (y[i] - vector2[k]);
-                    }
-                    p += c[j]*prod;
+                    p = p*(y[i] - vector2[j]) + c[j];
                 }
                 pp.Add(p);
             }
             foreach (var v in pp)
             {
-                dataGridView1.Rows.Add(p);
+                dataGridView1.Rows.Add(v);
             }
         }
 
